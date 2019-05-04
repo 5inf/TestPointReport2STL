@@ -25,13 +25,13 @@ Documentation and the latest version of this script can be found at: https://raw
 
 testpointdata=[
 /* paste testpoint data here */
-["GND","T13-1",[18.2118,11.7856,1],"Bottom", 0, "075-PRP259RS-S"],
-["+5.0V","T1-1",[23.8252,25.1206,1],"Bottom", 0, "075-PRP259RS-S"],
-["NetJ1_1","T2-1",[29.4386,34.925,1],"Bottom", 0, "075-PRP259RS-S"],
-["GND","T3-1",[10.3124,25.527,5],"Bottom", 0, "075-PRP259RS-S"],
-["SDA","T4-1",[29.464,33.3502,5],"Top", 0, "075-PRP259RS-S"],
-["SCL","T5-1",[26.793,32.428,1],"Top", 0, "075-PRP259RS-S"],
-["-5.0V","T6-1",[31.6774,9.1419,1],"Bottom", 0, "075-PRP259RS-S"],
+["GND","T13-1",[18.2118,11.7856,0],"Bottom", 0, "075-PRP259RS-S"],
+["+5.0V","T1-1",[23.8252,25.1206,0],"Bottom", 0, "075-PRP259RS-S"],
+["NetJ1_1","T2-1",[29.4386,34.925,0],"Bottom", 0, "075-PRP259RS-S"],
+["GND","T3-1",[10.3124,25.527,0],"Bottom", 0, "075-PRP259RS-S"],
+["SDA","T4-1",[29.464,33.3502,0],"Top", 0, "075-PRP259RS-S"],
+["SCL","T5-1",[26.793,32.428,0],"Top", 0, "075-PRP259RS-S"],
+["-5.0V","T6-1",[31.6774,9.1419,0],"Bottom", 0, "075-PRP259RS-S"],
 ["","M4",[5,5,0],"Both", 3.2, "Mounting"],
 ["","M3",[5,35,0],"Both", 3.2, "Mounting"],
 ["","M2",[35,5,0],"Both", 3.2, "Mounting"],
@@ -50,7 +50,7 @@ sheetthickness=10;  //thickness of mounting block holding the test probes
 showpins=true; //show the actual testpins
 initialpindistance=1; //the initial distance of the pins from the surface of the pcb
 
-drawmountingsystem=false;     //Generate mounting plates
+drawmountingsystem=true;     //Generate mounting plates
 
 showpcb = false;    //load a pcb 3d model specified by pcb path below
 pcbpath="";         //path to loadable pcb file (note: OpenSCAD supports stl format only)
@@ -62,12 +62,16 @@ pcbthickness=1.6;   //thickness of the (dummy) PCB
 movementdistance=5; //distance of movement of the pcb under test towards the bottom holder. The top holder moves twice as far.
 
 //Data specific to the default QATech.com 075-SDN250S/075-PRP259RS-S test needles 
-minpointheight=8.128;  //minimum distance of test needle tip from where it is mounted
-maxpointheight=14.732;  //maximum distance of test needle tip from where it is mounted
+minpointheight=0;  //minimum distance of test needle tip from where it is mounted
+maxpointheight=6.35;  //maximum distance of test needle tip from where it is mounted
 
 //////////////////////////////////////////////////////////
 /////////////// DO NOT EDIT BELOW ////////////////////////
 //////////////////////////////////////////////////////////
+
+use <testprobe.scad>
+use <WAMMounting.scad>
+
 timeoffset=initialpindistance/movementdistance;
 
 span=maxpointheight-minpointheight;
@@ -105,7 +109,7 @@ if(drawmountingsystem){
     //draw top block with interconnect pcb
 
     translate([0,0,-2*$t*movementdistance]){
-            WAMMountingTop(zpos=maxtop+span);
+        WAMMountingTop(zpos=maxtop+span+2);
     }
     //draw top bcb holder (this holder is optional as one option to hold down the pcb.)
     translate([0,0,-$t*movementdistance]){
@@ -116,8 +120,9 @@ if(drawmountingsystem){
         WAMMountingMiddle(zpos=-(1.6+5)/2);
     }
     //draw bottom block with interconnect pcb
-    WAMMountingBottom(zpos=-maxbottom-span-7);
+    WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
 }
+
 
 //center testpoints arround origin
 translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
@@ -168,13 +173,13 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             translate([0,0,pcbthickness/2+initialpindistance])
             union(){
                 difference(){
-                    translate([minx-borderx,miny-bordery,maxtop+span]){
+                    translate([minx-borderx,miny-bordery,maxtop+span+2]){
                         color("red",alpha=0.5)
                         cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
                     }
                     for(point=pointstop){
                         translate([point[2][0],point[2][1],0]){
-                            pinhole();
+                            pinhole(socket="");
                         }
                     }
                 }
@@ -182,7 +187,7 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
                 if(showpins){
                     for(point=pointstop){
                         translate([point[2][0],point[2][1],point[2][2]]){
-                            testpin(ontop=true,inset=point[2][2],tip=point[5]);
+                            testpin(ontop=true,inset=point[2][2]+initialpindistance,probe=point[5],socket="",movementdistance=movementdistance);
                         }
                     }
                 }
@@ -199,199 +204,23 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             translate([0,0,-pcbthickness/2-initialpindistance])
             union(){
                 difference(){
-                    translate([minx-borderx,miny-bordery,-maxbottom-span-10]){
+                    translate([minx-borderx,miny-bordery,-maxbottom-span-12]){
                         color("blue",alpha=0.5)
                         cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
                     }
                     for(point=pointsbottom){
                         translate([point[2][0],point[2][1],0]){
-                            pinhole();
+                            pinhole(socket="");
                         }
                     }
                 }
                 if(showpins){
                     for(point=pointsbottom){
                         translate([point[2][0],point[2][1],-point[2][2]])
-                            testpin(ontop=false,inset=point[2][2],tip=point[5]);
+                            testpin(ontop=false,inset=point[2][2]+initialpindistance,probe=point[5],socket="",movementdistance=movementdistance);
                     }
                 }
             }
         }
     }
-}
-
-//models the complete test pin
-module testpin(ontop=true,inset=0,tip=""){
-    $fs=0.3;
-    delay=timeoffset+inset/movementdistance;
-    rotate([0,ontop?0:180,0]){
-        //needle();
-        //sheath();
-        translate([0,0,$t>delay?($t-delay)*movementdistance:0])probe(tip=tip);
-        socket();
-    }
-}
-
-//models the hole that gets drilled through the sheet
-module pinhole(){
-   $fs=0.3;
-   cylinder(h=1000,d=1.35,center=true);     
-}
-
-module probe(tip=""){
-   //Probe QATech.com 075-PRP259RS-S 
-   $fs=0.1;
-   if(tip=="075-PRP259RS-S"){
-       color("Gold")
-       translate([0,0,0])cylinder(h=2,d1=0,d2=0.64,center=false);
-       //shaft 
-       color("Gold")
-       translate([0,0,2])cylinder(h=7.62,d=0.64,center=false);
-   }else{//Default
-       color("Blue")
-       translate([0,0,-0.5])cylinder(h=0.5,d1=2,d2=3,center=false);
-       color("Red")
-       translate([0,0,0])cylinder(h=2,d1=3.5,d2=0.64,center=false);
-       //shaft 
-       color("Red")
-       translate([0,0,2])cylinder(h=7.62,d=0.64,center=false);
-   }
-}
-
-module socket(){
-   //Socket QATech.com 075-SDN250S   
-   $fs=0.1;
-   color("Gray")
-   translate([0,0,8.62])cylinder(h=33.2-7.62,d=1.021,center=false);     
-}
-
-module WAMMountingTop(zpos=0){
-    //WA-AP-100 pressure plate / Andruckplatte
-    //TODO: correct hole positions
-    translate([0,0,zpos+7]){
-    difference(){
-        color("White",alpha=0.2)
-        cube([190,110,10], center=true);
-        translate([90,-50,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,0,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,50,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-50,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,0,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,50,0])cylinder(d=1.6,h=10,center=true);
-        translate([0,-20,0])cylinder(d=1.6,h=10,center=true);
-        translate([0,20,0])cylinder(d=1.6,h=10,center=true);
-    }
-    //interconnect pcb
-    translate([0,0,(10+1.6)/2])color("Green")cube([160,100,1.6], center=true); 
-    // push rods  
-    translate([-80,50,-22]){cylinder(d=8,h=22);}
-    translate([80,50,-22]){cylinder(d=8,h=22);}
-}
-}
-
-module WAMMountingMiddle(zpos=0){
-    //WA-PAP-100 mounting plate / Prüflingsauflageplatte
-    //TODO: correct hole positions
-    //Comes with a dummy coutout as hole. Adjust this cutout according to the actual pcb outline
-    translate([0,0,zpos+1.6])color("MediumSlateBlue",alpha=0.2)
-    difference(){
-        cube([190,110,5], center=true);
-        //dummy pcb cutout
-        translate([0,0,zpos])cube([38,38,6], center=true);
-        translate([0,0,zpos+4])cube([40.5,40.5,2], center=true);
-        
-        //mounting holes
-        translate([80,50,0])cylinder(d=10,h=10,center=true);
-        translate([-80,50,0])cylinder(d=10,h=10,center=true);
-        
-        translate([90,-5,0])cylinder(d=3,h=10,center=true);
-        translate([90,-25,0])cylinder(d=3,h=10,center=true);
-        translate([90,-45,0])cylinder(d=3,h=10,center=true);
-        translate([-90,-5,0])cylinder(d=3,h=10,center=true);
-        translate([-90,-25,0])cylinder(d=3,h=10,center=true);
-        translate([-90,-45,0])cylinder(d=3,h=10,center=true);
-        
-        translate([90,20,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,10,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,0,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,-10,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,-20,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,-30,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,-40,0])cylinder(d=1.6,h=10,center=true);
-        translate([90,-50,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,20,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,10,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,0,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-10,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-20,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-30,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-40,0])cylinder(d=1.6,h=10,center=true);
-        translate([-90,-50,0])cylinder(d=1.6,h=10,center=true);
-    }
-}
-
-module WAMMountingBottom(zpos=0){
-    //WA-M-1200 contact plate / Kontaktträgerplatte
-    //TODO: correct hole positions
-    translate([0,0,zpos]){
-        difference(){
-            color("Cornsilk")cube([190,110,10], center=true);
-            translate([90,-5,0])cylinder(d=3,h=10,center=true);
-            translate([90,-25,0])cylinder(d=3,h=10,center=true);
-            translate([90,-45,0])cylinder(d=3,h=10,center=true);
-            translate([-90,-5,0])cylinder(d=3,h=10,center=true);
-            translate([-90,-25,0])cylinder(d=3,h=10,center=true);
-            translate([-90,-45,0])cylinder(d=3,h=10,center=true);
-       
-            translate([90,20,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,10,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,0,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,-10,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,-20,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,-30,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,-40,0])cylinder(d=1.6,h=10,center=true);
-            translate([90,-50,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,20,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,10,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,0,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,-10,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,-20,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,-30,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,-40,0])cylinder(d=1.6,h=10,center=true);
-            translate([-90,-50,0])cylinder(d=1.6,h=10,center=true);
-            
-            translate([-30,-50,0])cylinder(d=3.2,h=10,center=true);
-            translate([30,-50,0])cylinder(d=3.2,h=10,center=true);
-            translate([-30,50,0])cylinder(d=3.2,h=10,center=true);
-            translate([30,50,0])cylinder(d=3.2,h=10,center=true);
-        }
-        //interconnect pcb
-        translate([0,0,-(10+1.6)/2])color("Green")cube([160,100,1.6], center=true); 
-        //guiding rods
-        guidingRod([-90,-45,-2-(10+1.6)/2]);
-        guidingRod([-90,45,-2-(10+1.6)/2]);
-        guidingRod([90,-45,-2-(10+1.6)/2]);
-        guidingRod([90,45,-2-(10+1.6)/2]);
-        //bottom pcb holder distance spring rods
-        distanceSpringRod([-88,-50,-1-(10+1.6)/2]);
-        distanceSpringRod([88,-50,-1-(10+1.6)/2]);
-        distanceSpringRod([88,50,-1-(10+1.6)/2]);
-        distanceSpringRod([-88,50,-1-(10+1.6)/2]);
-    }
-}
-
-module distanceSpringRod(pos=[0,0,0]){
-    translate(pos){
-        color("DimGray")translate([0,0,-2])cylinder(d=3,h=15);
-        translate([0,0,-$t*movementdistance]){
-            color("Gold")translate([0,0,19.5])cylinder(d=3,h=2);
-            color("Gold")translate([0,0,10])cylinder(d=1,h=10);
-        }
-    }
-}
-module guidingRod(pos=[0,0,0]){
-    translate(pos){
-        color("Black")translate([0,0,0])
-            cylinder(d=3,h=25);
-        }
 }
