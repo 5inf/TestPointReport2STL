@@ -48,14 +48,15 @@ The currently implemented sockets are:
 The script is not (yet) testing whether probes and socket match.
 
 ## Convert test point data from a csv file
-The entries for the testpointdata vector can easily be generated from a csv file using e.g. the Microsoft Excel formula below. The columns expected in the csv file for the below formula are as follows.
-A: Signal name
-B: Test point name
-C: x-pos in mm, ending with mm
-D: y-pos in mm, ending with mm
-E: Test point orientation, either "Top", "Bottom" or "Both".
-F: Test pad diameter
-G: Test probe type
+The entries for the testpointdata vector can easily be generated from a csv file using e.g. the Microsoft Excel formula below. The columns expected in the csv file for the below formula are as follows:
+
+    A: Signal name
+    B: Test point name
+    C: x-pos in mm, ending in mm
+    D: y-pos in mm, ending in mm
+    E: Test point orientation, either "Top", "Bottom" or "Both".
+    F: Test pad diameter
+    G: Test probe type
 
 Formula for English language Excel:
 
@@ -65,7 +66,15 @@ Formula for German language Excel:
 
     ="["""&A2&""","""&B2&""",["&LINKS(C2;LÄNGE(C2)-2)&","&LINKS(D2;LÄNGE(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
 
-Copy these formula in a cell behind each column with test point data, starting with row number two.
+Copy these formula in a cell behind each column with test point data, starting with row number two. If the data in your csv file is somewhat different this approach should still be easily adapted. If you are on Linux or don't like Excel below is an awk script:
+
+      awk -F";" 'NR > 1 {printf "[\"%s\", \"%s\", [%s,%s,0], \"%s\", %s, \"%s\", \"%s\"],\n",$1,$2,substr($3, 1, length($3)-2),substr($4, 1, length($4)-2),$5,$6,$7,$8}' testpointdata.csv
+
+Or if it is a "real" csv (split character is ",") then:
+
+    awk -F"," 'NR > 1 {printf "[\"%s\", \"%s\", [%s,%s,0], \"%s\", %s, \"%s\", \"%s\"],\n",$1,$2,substr($3, 1, length($3)-2),substr($4, 1, length($4)-2),$5,$6,$7,$8}' testpointdata.csv
+
+This script also available in testpointformat.sh.
 
 ## Animation
 The script supports OpenSCAD animation for a rough estimate of how the test pins will connect.
