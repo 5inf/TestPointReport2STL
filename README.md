@@ -66,7 +66,9 @@ Formula for German language Excel:
 
     ="["""&A2&""","""&B2&""",["&LINKS(C2;LÄNGE(C2)-2)&","&LINKS(D2;LÄNGE(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
 
-Copy these formula in a cell behind each column with test point data, starting with row number two. If the data in your csv file is somewhat different this approach should still be easily adapted. If you are on Linux or don't like Excel below is an awk script:
+Copy these formula in a cell behind each column with test point data, starting with row number two. If the data in your csv file is somewhat different this approach should still be easily adapted.
+
+If you are on Linux or don't like Excel below is an awk script doing the same:
 
       awk -F";" 'NR > 1 {printf "[\"%s\", \"%s\", [%s,%s,0], \"%s\", %s, \"%s\", \"%s\"],\n",$1,$2,substr($3, 1, length($3)-2),substr($4, 1, length($4)-2),$5,$6,$7,$8}' testpointdata.csv
 
@@ -74,7 +76,7 @@ Or if it is a "real" csv (split character is ",") then:
 
     awk -F"," 'NR > 1 {printf "[\"%s\", \"%s\", [%s,%s,0], \"%s\", %s, \"%s\", \"%s\"],\n",$1,$2,substr($3, 1, length($3)-2),substr($4, 1, length($4)-2),$5,$6,$7,$8}' testpointdata.csv
 
-This script also available in testpointformat.sh.
+This awk script also available as a shell script in the file testpointformat.sh.
 
 ## Animation
 The script supports OpenSCAD animation for a rough estimate of how the test pins will connect.
