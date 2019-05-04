@@ -5,7 +5,7 @@ In its simplest form the output is a rectangular block with holes for mouting th
 These two blocks can then be manufactured e.g. by 3D printing or any other means.
 
 Optional testprobes can be displayed (showpins=true), as well as a complete test fixture can be generated (drawmountingsystem=true).
-The default test probe geometry corresponds to QATech.com needles 075-PRP259RS-S and sheats 075-SDN250S.
+The default test probe geometry corresponds to QATech.com needles 075-PRP259RS-S and sheats 075-SDN250S, see https://www.qatech.com/downloads/075-25/075-25_Catalog.pdf.
 The test fixture is based on the WA-M-1200 fixture by GPS-Prüftechnik GmbH with the WA-AP-100 pressure plate, WA-PAP-100 mounting plate and WA-M-1200 contact plate. The exact model of the test fixture is however still work in progress. For details on the mouting system used see https://www.gps-prueftechnik.de/_downloads_DE/WA-M-12xx.pdf.
 
 All dimensions used by the script are metric.
