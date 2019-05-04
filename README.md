@@ -12,11 +12,14 @@ All dimensions used by the script are metric.
 
 ## Test point data representation
 The test point data is represented as list, implemented as a multidimensional OpenSCAD vector named testpointdata.
-testpointdata = [
-["signal name 1", "test point name 1", [position x, y, z], "on side", testpad hole diameter, "test probe type"],
-["signal name 2", "test point name 2", [position x, y, z], "on side", testpad hole diameter, "test probe type"],
-...
-]
+
+
+    testpointdata = [
+    ["signal name 1", "test point name 1", [position x, y, z], "on side", testpad hole diameter, "test probe type"],
+    ["signal name 2", "test point name 2", [position x, y, z], "on side", testpad hole diameter, "test probe type"],
+    ...
+    ]
+
 
 The list entries are as follows:
 - "signal name" is the name of the signal the test point connects to. The entry is not (yet) used.
@@ -37,11 +40,14 @@ F: Test pad diameter
 G: Test probe type
 
 Formula for english language Excel:
-="["""&A2&""","""&B2&""",["&LEFT(C2;LENGTH(C2)-2)&","&LEFT(D2;LENGTH(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
-Formula for german language Excel:
-="["""&A2&""","""&B2&""",["&LINKS(C2;LÄNGE(C2)-2)&","&LINKS(D2;LÄNGE(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
 
-Copy these formula in a cell behind the column
+    ="["""&A2&""","""&B2&""",["&LEFT(C2;LENGTH(C2)-2)&","&LEFT(D2;LENGTH(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
+
+Formula for german language Excel:
+
+    ="["""&A2&""","""&B2&""",["&LINKS(C2;LÄNGE(C2)-2)&","&LINKS(D2;LÄNGE(D2)-2)&",0],"&E2&", "&F2&","&G2&"],"
+
+Copy these formula in a cell behind each column with testpoint data, starting with row number two.
 
 ## Animation
 The script supports OpenSCAD annimation for a rough estimate of how the tetspins will connect.
