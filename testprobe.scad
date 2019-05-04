@@ -26,14 +26,20 @@ module testpin(ontop=true,inset=0,probe="",socket="",inset=0,movementdistance=0)
 //models the hole that gets drilled through the sheet
 module pinhole(socket=""){
    $fs=0.3;
-   if(socket=="075-SDN250S"){
-       // QATech.com 075-PRP259RS-S with socket 075-SDN250S
+    if(socket=="050-SRB255P"){
+       // QATech.com
+       cylinder(h=1000,d=1.0,center=true);
+   }else if(socket=="050-STB255P"){
+       // QATech.com
+       cylinder(h=1000,d=1.0,center=true);
+   }else if(socket=="075-SDN250S"){
+       // QATech.com socket 075-SDN250S
        cylinder(h=1000,d=1.35,center=true);
    }else if(socket=="075-PRP259RS-S"){
-       //default: QATech.com 075-PRP259RS-S with socket 075-SDN250S
+       //default: QATech.com socket 075-SDN250S
        cylinder(h=1000,d=1.35,center=true);
    }else{
-       //default: QATech.com 075-PRP259RS-S with socket 075-SDN250S
+       //default: QATech.com socket 075-SDN250S
        cylinder(h=1000,d=1.35,center=true);
    }   
 }
@@ -43,7 +49,45 @@ module probe(probe="",inset=0,movementdistance=0){
     delay=inset/movementdistance;
     translate([0,0,$t>delay?($t-delay)*movementdistance:0]){ 
        $fs=0.1;
-       if(probe=="075-PRP2501S"){
+       if(probe=="050-PTP2540S"){
+           color("Gold")
+           //tip part 1
+           translate([0,0,0.53/2])sphere(d=0.53);
+           //tip part 2
+           color("Gold")
+            translate([0,0,0.53/2])cylinder(h=2,d=0.53,center=false);
+           //shaft 
+           color("Gold")
+           translate([0,0,2])cylinder(h=8,d=0.53,center=false);
+        }else 
+        if(probe=="050-PTP2541S"){
+           color("Gold")
+           //tip part 1
+           translate([0,0,0])cylinder(h=2,d1=0,d2=0.53,center=false);
+           //tip part 2
+           //shaft 
+           color("Gold")
+           translate([0,0,2])cylinder(h=8,d=0.53,center=false);
+        }else if(probe=="050-PRP2540S"){
+           color("Gold")
+           //tip part 1
+           translate([0,0,0.53/2])sphere(d=0.53);
+           color("Gold")
+           //tip part 2
+           translate([0,0,0.53/2])cylinder(h=2,d=0.53,center=false);
+           //shaft 
+           color("Gold")
+           translate([0,0,2])cylinder(h=8,d=0.53,center=false);
+        }else
+        if(probe=="050-PRP2541S"){
+           color("Gold")
+           //tip part 1
+           translate([0,0,0])cylinder(h=2,d1=0,d2=0.53,center=false);
+           //tip part 2
+           //shaft 
+           color("Gold")
+           translate([0,0,2])cylinder(h=8,d=0.53,center=false);
+        }else if(probe=="075-PRP2501S"){
            color("Gold")
            //tip part 1
            translate([0,0,0])cylinder(h=1.27/2,d1=0,d2=1.17,center=false);
@@ -104,17 +148,33 @@ module probe(probe="",inset=0,movementdistance=0){
 module socket(socket=""){
    //Socket QATech.com 075-SDN250S 
    $fs=0.1;
-   color("Gray")
-   if(socket=="075-SDN250S"){
-       // QATech.com 075-PRP259RS-S with socket 075-SDN250S
-       translate([0,0,7.8])cylinder(h=25.4,d=1.021,center=false);
-       translate([0,0,8.38])cylinder(h=1,d=1.46,center=false);      
+   if(socket=="050-SRB255P"){
+       color("Gray")
+       // QATech.com
+       translate([0,0,43.18-36.27])cylinder(h=40.41,d=0.95,center=false);
+       translate([0,0,8+5.08])cylinder(h=1,d=1.0,center=false);
+       color("blue")
+       translate([0,0,8+7.37])cylinder(h=1,d=1.05,center=false);
+       translate([0,0,8+11.71])cylinder(h=1,d=1.0,center=false);      
+   }else if(socket=="050-STB255P"){
+       color("Gray")
+       // QATech.com
+       translate([0,0,43.18-36.27])cylinder(h=31.83,d=0.95,center=false);
+       translate([0,0,8+5.08])cylinder(h=1,d=1.0,center=false);
+       color("fuchsia")
+       translate([0,0,8+7.37])cylinder(h=1,d=1.05,center=false);
+       translate([0,0,8+11.71])cylinder(h=1,d=1.0,center=false);      
    }else if(socket=="075-SDN250S"){
-       translate([0,0,7.8])cylinder(h=25.4,d=1.021,center=false);
-       translate([0,0,8.38])cylinder(h=1,d=1.46,center=false); 
+       // QATech.com 075-SDN250S
+       color("Gray")
+       translate([0,0,7.8])cylinder(h=29.72,d=1.021,center=false);
+       color("yellow")
+       translate([0,0,7.8+7.62])cylinder(h=1,d=1.46,center=false);      
    }else{
        //default: QATech.com 075-PRP259RS-S with socket 075-SDN250S
-       translate([0,0,7.8])cylinder(h=25.4,d=1.021,center=false);
-       translate([0,0,8.38])cylinder(h=1,d=1.46,center=false);
+       color("red")
+       translate([0,0,7.8])cylinder(h=29.72,d=1.021,center=false);
+       color("red")
+       translate([0,0,7.8+7.62])cylinder(h=1,d=1.46,center=false);
    }
 }
