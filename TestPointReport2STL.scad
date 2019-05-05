@@ -62,13 +62,16 @@ showpins=true;
 initialpindistance=1;
 
 //Generate mounting plates
-drawmountingsystem=false;
-
+drawmountingsystem=true;
+//include the holder for the pcb top side
+includebottompcbholder=true;
 //include a second holder for the pcb top side
 includetoppcbholder=true;
 
 //load a pcb 3d model specified by pcb path below
-showpcb = false;
+show3dpcb = false;
+//load a pcb 2d outline of the pcb from the pcb path spedified below
+show2dpcb = false;
 //path to loadable pcb file (note: OpenSCAD supports stl format only)
 pcbpath="";
 //show a dummy pcb model
@@ -89,6 +92,9 @@ movementdistance=5;
 minpointheight=0;
 //maximum distance of test needle tip from where it is mounted
 maxpointheight=6.35;
+
+//reduce to 2d for dxf export
+dxfexport=false;
 
 //////////////////////////////////////////////////////////
 /////////////// DO NOT EDIT BELOW ////////////////////////
@@ -120,6 +126,18 @@ minbottom=min([for(v=pointsbottom)v[2][2]]);
 maxdisttop=maxtop-mintop;
 maxdistbottom=maxbottom-minbottom;
 
+if(dxfexport){
+    showpins=false;
+    includetoppcbholder=false;
+    showpcb = false;
+    showpcbdummy = false;
+    projection(){all();}
+}else{
+    all();
+}
+
+module all(){
+
 if(movementdistance>initialpindistance+span){
     echo ("ERROR: moving to far. Pins and setup might get damaged!");
 }
@@ -143,8 +161,10 @@ if(drawmountingsystem){
     }
 }
     //draw bottom pcb holder
-    translate([0,0,-$t*movementdistance]){
-        WAMMountingMiddle(zpos=-(1.6+5)/2);
+    if(includebottompcbholder){
+        translate([0,0,-$t*movementdistance]){
+            WAMMountingMiddle(zpos=-(1.6+5)/2);
+        }
     }
     //draw bottom block with interconnect pcb
     //WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
@@ -163,7 +183,11 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
                 }
         }
         //external pcb model
-        if(showpcb){
+        if(show3dpcb){
+            import(pcbpath);
+        }
+        if(show2dpcb){
+            //import("test2.dxf");
             import(pcbpath);
         }
         //testpads
@@ -259,4 +283,5 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             }
         }
     }
+}
 }
