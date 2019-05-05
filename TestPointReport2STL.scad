@@ -9,7 +9,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.   
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 /*
@@ -37,58 +37,58 @@ testpointdata=[
 ["", "M4", [5,5,0], "Both", 0, "", ""],
 ["", "M3", [5,35,0], "Both", 0, "", ""],
 ["", "M2", [35,5,0], "Both", 0, "", ""],
-["", "M1", [35,35,0], "Both", 0, "", ""],
+["", "M1", [35,35,0], "Both", 0, "", ""]
 /* end of paste testpoint data here */
 ];
 
 //Parameters for the simple rectangular testpoint holder block
 /* [Simple] */
 //build fixture for needles for top testpoints
-buildtop=true; 
+buildtop=true;
 //build fixture for needles for top testpoints
-buildbottom=true; 
+buildbottom=true;
 //extra width of mounting sheet in x direction
-borderx=20;         
+borderx=20;
 //extra width of mounting sheet in y direction
-bordery=10;         
+bordery=10;
 //thickness of mounting block holding the test probes
 sheetthickness=10;
 
 //Advanced model generation
 /* [Visual] */
 //show the actual testpins
-showpins=true; 
+showpins=true;
 //the initial distance of the pins from the surface of the pcb
-initialpindistance=1; 
+initialpindistance=1;
 
 //Generate mounting plates
-drawmountingsystem=true;  
+drawmountingsystem=false;
 
 //include a second holder for the pcb top side
-includetoppcbholder=false;
+includetoppcbholder=true;
 
 //load a pcb 3d model specified by pcb path below
-showpcb = false;    
+showpcb = false;
 //path to loadable pcb file (note: OpenSCAD supports stl format only)
-pcbpath="";         
+pcbpath="";
 //show a dummy pcb model
-showpcbdummy = true; 
+showpcbdummy = true;
 //show the test pad locations on the dummy pcb as a simple cylinder shape
 showtestpads = true; //show the test pad locations on the dummy pcb as a simple cylinder shape
 //thickness of the (dummy) PCB
-pcbthickness=1.6;   
+pcbthickness=1.6;
 
 //Animation options
 /* [Animation] */
 //distance of movement of the pcb under test towards the bottom holder. The top holder moves twice as far.
-movementdistance=5; 
+movementdistance=5;
 
 /* [Hidden] */
-//Data specific to the default QATech.com 075-SDN250S/075-PRP259RS-S test needles 
+//Data specific to the default QATech.com 075-SDN250S/075-PRP259RS-S test needles
 //minimum distance of test needle tip from where it is mounted
-minpointheight=0;  
+minpointheight=0;
 //maximum distance of test needle tip from where it is mounted
-maxpointheight=6.35;  
+maxpointheight=6.35;
 
 //////////////////////////////////////////////////////////
 /////////////// DO NOT EDIT BELOW ////////////////////////
@@ -153,7 +153,7 @@ if(drawmountingsystem){
 
 //center testpoints arround origin
 translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
-    
+
     //dummy PCB
     translate([0,0,-$t*movementdistance]){
         if(showpcbdummy){
@@ -202,11 +202,11 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
                 difference(){
                     if(!drawmountingsystem){
                     translate([minx-borderx,miny-bordery,maxtop+span+2]){
-                        //color("red",alpha=0.5)
-               cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
+                    color("red",alpha=0.5)
+                    cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
                         }}else{
                     translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
-                        WAMMountingTop(zpos=maxtop+span+2);                
+                        WAMMountingTop(zpos=maxtop+span+2);
                     }}
                     for(point=pointstop){
                         translate([point[2][0],point[2][1],0]){

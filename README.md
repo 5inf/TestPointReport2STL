@@ -4,9 +4,13 @@ This is an *OpenSCAD* script to convert a csv file containing a PCB test point r
 In its simplest form the output is a rectangular block with holes for mounting the test probes into. The script generates one block for top (in red) and one for bottom (in blue), with a size enclosing the test point positions plus any extra space defined by borderx and bordery.
 These two blocks can then be manufactured e.g. by 3D printing or any other means.
 
+![The simple fixture](simplefixture1.png)
+
 Optional test probes can be displayed (showpins=true), as well as a complete test fixture can be generated (drawmountingsystem=true).
 The default test probe geometry corresponds to *QATech.com* probe *075-PRP259RS-S* and sockets *075-SDN250S*, see https://www.qatech.com/downloads/075-25/075-25_Catalog.pdf.
 The test fixture is based on the *WA-M-1200* fixture by *GPS-Prüftechnik GmbH* with the *WA-AP-100* pressure plate, *WA-PAP-100* mounting plate and *WA-M-1200* contact plate. The exact model of the test fixture is however still work in progress. For details on the mounting system used see https://www.gps-prueftechnik.de/_downloads_DE/WA-M-12xx.pdf.
+
+![The full holder](fullholder1.png)
 
 All dimensions used by the script are metric.
 
@@ -82,13 +86,9 @@ Formula for German language *Excel*:
 
 Copy these formula in a cell behind each column with test point data, by starting with row number two and then pulling down from there. If the data in your csv file is somewhat different this approach should still be easily adapted.
 
-<<<<<<< HEAD
-If you are on *Linux* or don't like *Excel* below is an awk script:
-=======
 Copy these formula in a cell behind each column with test point data, starting with row number two. If the data in your csv file is somewhat different this approach should still be easily adapted.
 
 If you are on Linux or don't like Excel below is an awk script doing the same:
->>>>>>> 9475a9f1af996aa178f0f7b87d31c3a871f5eb1a
 
       awk -F";" 'NR > 1 {printf "[\"%s\", \"%s\", [%s,%s,0], \"%s\", %s, \"%s\", \"%s\"],\n",$1,$2,substr($3, 1, length($3)-2),substr($4, 1, length($4)-2),$5,$6,$7,$8}' testpointdata.csv
 
@@ -115,12 +115,8 @@ The *OpenSCAD Customizer* also has a few predefined settings to choose from.
 5. "Full fixture" gives you the whole test fixture.
 6. "Full fixture double holder" gives you the whole test fixture with a second middle holder to press the *PCB* down. The second holder is an exact copy of the first holder.
 
-<<<<<<< HEAD
 The script is also available on *Thingiverse*. Visit https://www.thingiverse.com/thing:3608402.
 If you are lucky and the *Thingiverse Customizer App* is working you can customize the fixture directly on *Thingiverse*, so you may not even have to install *OpenSCAD* or *FreeCAD*.
-=======
-This awk script also available as a shell script in the file testpointformat.sh.
->>>>>>> 9475a9f1af996aa178f0f7b87d31c3a871f5eb1a
 
 ## Animation
 The script supports *OpenSCAD* animation for a rough estimate of how and in which order the test pins will connect. The absolute positions and geometrical movement of the surrounding test fixture is however not (yet) fully correct. So depending on the test pin data geometry collisions will appear. The test probe animation itself should be fine though.
