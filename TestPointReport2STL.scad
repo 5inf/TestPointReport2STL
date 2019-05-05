@@ -23,47 +23,72 @@ Documentation and the latest version of this script can be found at: https://raw
 //////////////// CONFIGURE BELOW//////////////////////////
 //////////////////////////////////////////////////////////
 
+//data of testpoints
+/* [test point data] */
 testpointdata=[
 /* paste testpoint data here */
-["GND","T13-1",[18.2118,11.7856,0],"Bottom", 0, "075-PRP259RS-S"],
-["+5.0V","T1-1",[23.8252,25.1206,0],"Bottom", 0, "075-PRP259RS-S"],
-["NetJ1_1","T2-1",[29.4386,34.925,0],"Bottom", 0, "075-PRP259RS-S"],
-["GND","T3-1",[10.3124,25.527,0],"Bottom", 0, "075-PRP259RS-S"],
-["SDA","T4-1",[29.464,33.3502,0],"Top", 0, "075-PRP259RS-S"],
-["SCL","T5-1",[26.793,32.428,0],"Top", 0, "075-PRP259RS-S"],
-["-5.0V","T6-1",[31.6774,9.1419,0],"Bottom", 0, "075-PRP259RS-S"],
-["","M4",[5,5,0],"Both", 3.2, "Mounting"],
-["","M3",[5,35,0],"Both", 3.2, "Mounting"],
-["","M2",[35,5,0],"Both", 3.2, "Mounting"],
-["","M1",[35,35,0],"Both", 3.2, "Mounting"],
+["GND", "T13-1", [8.2118,11.7856,0], "Bottom", 0, "075-PRP259RS-S", "075-SDN250S"],
+["+5.0V", "T1-1", [23.8252,25.1206,0], "Bottom", 0, "075-PRP259RS-S", "075-SDN250S"],
+["NetJ1_1", "T2-1", [29.4386,34.925,0], "Bottom", 0, "075-PRP259RS-S", "075-SDN250S"],
+["GND", "T3-1", [10.3124,25.527,0], "Bottom", 0, "075-PRP259RS-S", "075-SDN250S"],
+["SDA", "T4-1", [29.464,33.3502,0], "Top", 0, "075-PRP259RS-S", "075-SDN250S"],
+["SCL", "T5-1", [26.793,32.428,0], "Top", 0, "075-PRP259RS-S", "075-SDN250S"],
+["-5.0V", "T6-1", [31.6774,9.1419,0], "Bottom", 0, "075-PRP259RS-S", "075-SDN250S"],
+["", "M4", [5,5,0], "Both", 0, "075-PRP259RS-S", "075-SDN250S"],
+["", "M3", [5,35,0], "Both", 0, "075-PRP259RS-S", "075-SDN250S"],
+["", "M2", [35,5,0], "Both", 0, "075-PRP259RS-S", "075-SDN250S"],
+["", "M1", [35,35,0], "Both", 0, "075-PRP259RS-S", "075-SDN250S"]
 /* end of paste testpoint data here */
 ];
 
 //Parameters for the simple rectangular testpoint holder block
-buildtop=true; //build fixture for needles for top testpoints
-buildbottom=true; //build fixture for needles for top testpoints
-borderx=20;         //extra width of mounting sheet in x direction
-bordery=10;         //extra width of mounting sheet in y direction
-sheetthickness=10;  //thickness of mounting block holding the test probes
+/* [Simple] */
+//build fixture for needles for top testpoints
+buildtop=true; 
+//build fixture for needles for top testpoints
+buildbottom=true; 
+//extra width of mounting sheet in x direction
+borderx=20;         
+//extra width of mounting sheet in y direction
+bordery=10;         
+//thickness of mounting block holding the test probes
+sheetthickness=10;
 
 //Advanced model generation
-showpins=true; //show the actual testpins
-initialpindistance=1; //the initial distance of the pins from the surface of the pcb
+/* [Visual] */
+//show the actual testpins
+showpins=true; 
+//the initial distance of the pins from the surface of the pcb
+initialpindistance=1; 
 
-drawmountingsystem=true;     //Generate mounting plates
+//Generate mounting plates
+drawmountingsystem=true;  
 
-showpcb = false;    //load a pcb 3d model specified by pcb path below
-pcbpath="";         //path to loadable pcb file (note: OpenSCAD supports stl format only)
-showpcbdummy = true; //show a dummy pcb model
+//include a second holder for the pcb top side
+includetoppcbholder=false;
+
+//load a pcb 3d model specified by pcb path below
+showpcb = false;    
+//path to loadable pcb file (note: OpenSCAD supports stl format only)
+pcbpath="";         
+//show a dummy pcb model
+showpcbdummy = true; 
+//show the test pad locations on the dummy pcb as a simple cylinder shape
 showtestpads = true; //show the test pad locations on the dummy pcb as a simple cylinder shape
-pcbthickness=1.6;   //thickness of the (dummy) PCB
+//thickness of the (dummy) PCB
+pcbthickness=1.6;   
 
 //Animation options
-movementdistance=5; //distance of movement of the pcb under test towards the bottom holder. The top holder moves twice as far.
+/* [Animation] */
+//distance of movement of the pcb under test towards the bottom holder. The top holder moves twice as far.
+movementdistance=5; 
 
+/* [Hidden] */
 //Data specific to the default QATech.com 075-SDN250S/075-PRP259RS-S test needles 
-minpointheight=0;  //minimum distance of test needle tip from where it is mounted
-maxpointheight=6.35;  //maximum distance of test needle tip from where it is mounted
+//minimum distance of test needle tip from where it is mounted
+minpointheight=0;  
+//maximum distance of test needle tip from where it is mounted
+maxpointheight=6.35;  
 
 //////////////////////////////////////////////////////////
 /////////////// DO NOT EDIT BELOW ////////////////////////
@@ -77,10 +102,10 @@ timeoffset=initialpindistance/movementdistance;
 span=maxpointheight-minpointheight;
 
 pointstop=[for(v=testpointdata)if(v[3]!="Bottom")v];
-echo(pointstop);
+//echo(pointstop);
 
 pointsbottom=[for(v=testpointdata)if(v[3]!="Top")v];
-echo(pointsbottom);
+//echo(pointsbottom);
 
 maxx=max([for(v=testpointdata)v[2][0]]);
 minx=min([for(v=testpointdata)v[2][0]]);
@@ -109,18 +134,20 @@ if(drawmountingsystem){
     //draw top block with interconnect pcb
 
     translate([0,0,-2*$t*movementdistance]){
-        WAMMountingTop(zpos=maxtop+span+2);
+        //WAMMountingTop(zpos=maxtop+span+2);
     }
     //draw top bcb holder (this holder is optional as one option to hold down the pcb.)
+    if(includetoppcbholder){
     translate([0,0,-$t*movementdistance]){
         WAMMountingMiddle(zpos=+(-1.6+5)/2);
     }
+}
     //draw bottom pcb holder
     translate([0,0,-$t*movementdistance]){
         WAMMountingMiddle(zpos=-(1.6+5)/2);
     }
     //draw bottom block with interconnect pcb
-    WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
+    //WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
 }
 
 
@@ -173,13 +200,17 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             translate([0,0,pcbthickness/2+initialpindistance])
             union(){
                 difference(){
+                    if(!drawmountingsystem){
                     translate([minx-borderx,miny-bordery,maxtop+span+2]){
-                        color("red",alpha=0.5)
-                        cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
-                    }
+                        //color("red",alpha=0.5)
+               cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
+                        }}else{
+                    translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
+                        WAMMountingTop(zpos=maxtop+span+2);                
+                    }}
                     for(point=pointstop){
                         translate([point[2][0],point[2][1],0]){
-                            pinhole(socket="");
+                            pinhole(socket=point[6]);
                         }
                     }
                 }
@@ -187,7 +218,7 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
                 if(showpins){
                     for(point=pointstop){
                         translate([point[2][0],point[2][1],point[2][2]]){
-                            testpin(ontop=true,inset=point[2][2]+initialpindistance,probe=point[5],socket="",movementdistance=movementdistance);
+                            testpin(ontop=true,inset=point[2][2]+initialpindistance,probe=point[5],socket=point[6],movementdistance=movementdistance);
                         }
                     }
                 }
@@ -204,20 +235,25 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             translate([0,0,-pcbthickness/2-initialpindistance])
             union(){
                 difference(){
+                    if(!drawmountingsystem){
                     translate([minx-borderx,miny-bordery,-maxbottom-span-12]){
                         color("blue",alpha=0.5)
                         cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
+                    }}else{
+                    translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
+                    WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
+                    }
                     }
                     for(point=pointsbottom){
                         translate([point[2][0],point[2][1],0]){
-                            pinhole(socket="");
+                            pinhole(socket=point[6]);
                         }
                     }
                 }
                 if(showpins){
                     for(point=pointsbottom){
                         translate([point[2][0],point[2][1],-point[2][2]])
-                            testpin(ontop=false,inset=point[2][2]+initialpindistance,probe=point[5],socket="",movementdistance=movementdistance);
+                            testpin(ontop=false,inset=point[2][2]+initialpindistance,probe=point[5],socket=point[6],movementdistance=movementdistance);
                     }
                 }
             }
