@@ -47,26 +47,33 @@ testpointdata=[
 buildtop=true;
 //build fixture for needles for top testpoints
 buildbottom=true;
-//extra width of mounting sheet in x direction
-borderx=20;
-//extra width of mounting sheet in y direction
-bordery=10;
+//shall the block be a fixed size or defined by the required space + borderx/bordery
+fixedsize=true;
+//size of block in x direction if fixedsize=true
+sizex=50;
+//size of block in y direction if fixedsize=true
+sizey=50;
+//extra width of mounting sheet in x direction if fixedsize=false
+borderx=5;
+//extra width of mounting sheet in y direction fixedsize=false
+bordery=5;
+
 //thickness of mounting block holding the test probes
 sheetthickness=10;
 
 //Advanced model generation
 /* [Visual] */
 //show the actual testpins
-showpins=true;
+showpins=false;
 //the initial distance of the pins from the surface of the pcb
 initialpindistance=1;
 
 //Generate mounting plates
-drawmountingsystem=true;
+drawmountingsystem=false;
 //include the holder for the pcb top side
-includebottompcbholder=true;
+includebottompcbholder=false;
 //include a second holder for the pcb top side
-includetoppcbholder=true;
+includetoppcbholder=false;
 
 //load a pcb 3d model specified by pcb path below
 show3dpcb = false;
@@ -75,9 +82,9 @@ show2dpcb = false;
 //path to loadable pcb file (note: OpenSCAD supports stl format only)
 pcbpath="";
 //show a dummy pcb model
-showpcbdummy = true;
+showpcbdummy = false;
 //show the test pad locations on the dummy pcb as a simple cylinder shape
-showtestpads = true; //show the test pad locations on the dummy pcb as a simple cylinder shape
+showtestpads = false; //show the test pad locations on the dummy pcb as a simple cylinder shape
 //thickness of the (dummy) PCB
 pcbthickness=1.6;
 
@@ -173,7 +180,9 @@ if(drawmountingsystem){
 
 //center testpoints arround origin
 translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
-
+//cylinder(r=1,h=200);
+//  translate([minx,miny,0])cylinder(r=1,h=200);
+//  translate([maxx,maxy,0])cylinder(r=1,h=200);
     //dummy PCB
     translate([0,0,-$t*movementdistance]){
         if(showpcbdummy){
@@ -225,11 +234,17 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             union(){
                 difference(){
                     if(!drawmountingsystem){
-                    translate([minx-borderx,miny-bordery,maxtop+span+2]){
-                    color("red",alpha=0.5)
-                    cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
-                        }}else{
-                    translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
+                      if(fixedsize){
+                        translate([-sizex/2+(minx+maxx)/2,(miny+maxy)/2-sizey/2,maxtop+span+2]){
+                        color("red",alpha=0.5)
+                        cube([sizex,sizey,sheetthickness],center=false);}
+                      }else{
+                        translate([minx-borderx,miny-bordery,maxtop+span+2]){
+                        color("red",alpha=0.5)
+                        cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);}
+                      }
+                    }else{
+                      translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
                         WAMMountingTop(zpos=maxtop+span+2);
                     }}
                     for(point=pointstop){
@@ -260,10 +275,16 @@ translate([-(minx+maxx)/2,-(maxy+miny)/2,0]){
             union(){
                 difference(){
                     if(!drawmountingsystem){
-                    translate([minx-borderx,miny-bordery,-maxbottom-span-12]){
+                      if(fixedsize){
+                    translate([(minx+maxx)/2-sizex/2,(miny+maxy)/2-sizey/2,-maxbottom-span-12]){
+                        color("blue",alpha=0.5)
+                        cube([sizex,sizey,sheetthickness],center=false);
+                    }}else{
+                        translate([minx-borderx,miny-bordery,-maxbottom-span-12]){
                         color("blue",alpha=0.5)
                         cube([maxx-minx+2*borderx,maxy-miny+2*bordery,sheetthickness],center=false);
-                    }}else{
+                      }}
+                    }else{
                     translate([+(minx+maxx)/2,+(maxy+miny)/2,0]){
                     WAMMountingBottom(zpos=-maxbottom-span-9,movementdistance=movementdistance);
                     }
